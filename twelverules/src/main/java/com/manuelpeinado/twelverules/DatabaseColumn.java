@@ -18,7 +18,8 @@ public class DatabaseColumn {
 	public final static int TYPE_TEXT = 0;
 	public final static int TYPE_INTEGER = 1;
 	public final static int TYPE_LONG = 2;
-	public final static int TYPE_LAST = 2;
+	public final static int TYPE_REAL = 3;
+	public final static int TYPE_LAST = 3;
 	
 	public final static int FLAG_PRIMARY_KEY = 0x1;
 	public final static int FLAG_NOT_NULL = 0x2;
@@ -54,6 +55,8 @@ public class DatabaseColumn {
 			return "INTEGER";
 		case TYPE_LONG:
 			return "LONG";
+		case TYPE_REAL:
+			return "REAL";
 		default:
 			return null;
 		}
@@ -85,7 +88,17 @@ public class DatabaseColumn {
 		if (DEBUG) DbUtils.myAssert(type == TYPE_INTEGER);
 		dest.put(name, value);
 	}
+	
+	public void put(ContentValues dest, long value) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_LONG);
+		dest.put(name, value);
+	}
 
+	public void put(ContentValues dest, double value) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_REAL);
+		dest.put(name, value);
+	}
+	
 	public void put(ContentValues dest, String value) {
 		if (type == TYPE_INTEGER) {
 			put(dest, Integer.parseInt(value));

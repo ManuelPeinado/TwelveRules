@@ -139,4 +139,25 @@ public class DatabaseTable {
 	public void clear() {
 		DbUtils.clearTable(db, this);
 	}
+	
+	/**
+	 * Helper method to create a standard ID column. 
+	 */
+	protected static DatabaseColumn idColumn() {
+		return DatabaseColumn.ID;
+	}
+
+	/**
+	 * Helper method to create a column of LONG type. 
+	 */
+	protected static DatabaseColumn longColumn(String name) {
+		return new DatabaseColumn(name, DatabaseColumn.TYPE_LONG);
+	}
+
+	/**
+	 * Helper method to create a column of REAL type. 
+	 */
+	protected static DatabaseColumn realColumn(String name) {
+		return new DatabaseColumn(name, DatabaseColumn.TYPE_REAL);
+	}
 }
