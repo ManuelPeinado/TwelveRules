@@ -18,7 +18,8 @@ local.properties
 # Eclipse project files
 .classpath
 .project
-.settings
+.settings/
+project.properties
 
 # Maven
 target
