@@ -119,6 +119,28 @@ public class DatabaseColumn {
 		return cursor.getInt(index);
 	}
 	
+	public long extractLongFrom(ContentValues values) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_LONG);
+		return values.getAsLong(name);
+	}
+
+	public long extractLongFrom(Cursor cursor) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_LONG);
+		int index = cursor.getColumnIndex(name);
+		return cursor.getLong(index);
+	}
+	
+	public double extractRealFrom(ContentValues values) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_REAL);
+		return values.getAsDouble(name);
+	}
+
+	public double extractRealFrom(Cursor cursor) {
+		if (DEBUG) DbUtils.myAssert(type == TYPE_REAL);
+		int index = cursor.getColumnIndex(name);
+		return cursor.getDouble(index);
+	}
+
 	public String extractStringFrom(Cursor cursor) {
 		if (DEBUG) DbUtils.myAssert(type == TYPE_TEXT);
 		int index = cursor.getColumnIndex(name);

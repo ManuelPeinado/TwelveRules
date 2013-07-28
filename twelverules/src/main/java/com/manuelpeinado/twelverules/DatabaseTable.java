@@ -1,6 +1,8 @@
 package com.manuelpeinado.twelverules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import android.content.ContentValues;
@@ -8,18 +10,23 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.manuelpeinado.sql_dsl.Field;
 import com.manuelpeinado.sql_dsl.Query;
 import com.manuelpeinado.sql_dsl.Table;
 
 
 public class DatabaseTable {
+	public interface Listener {
+		public void onTableModified();
+	}
+
 	private InsertHelper insertHelper;
 	private HashMap<String, Integer> insertHelperColumnIndices;
-	
 	private SQLiteDatabase db;
 	private DatabaseColumn[] columns;
 	private String name;
+	private List<Listener> listeners;
 
 	protected DatabaseTable(String name, SQLiteDatabase db, DatabaseColumn[] columns) {
 		this.name = name;
@@ -69,7 +76,9 @@ public class DatabaseTable {
 	}
 	
 	public long insert(ContentValues values) {
-		return db.insert(name, null, values);
+		long result = db.insert(name, null, values);
+		notifyListeners();
+		return result;
 	}
 
 	public long insertWithHelper(ContentValues values) {
@@ -90,7 +99,9 @@ public class DatabaseTable {
 			int index = insertHelperColumnIndices.get(key);
 			insertHelper.bind(index, values.getAsString(key));
 		}
-		return insertHelper.execute();
+		long result = insertHelper.execute();
+		notifyListeners();
+		return result;
 	}
 	
 	public void finishInsert() {
@@ -159,5 +170,26 @@ public class DatabaseTable {
 	 */
 	protected static DatabaseColumn realColumn(String name) {
 		return new DatabaseColumn(name, DatabaseColumn.TYPE_REAL);
+	}
+	
+	public void addListener(Listener listener) {
+		if (listeners == null) {
+			listeners = new ArrayList<Listener>();
+		}
+		listeners.add(listener);
+	}
+	
+	public void removeListener(Listener listener) {
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
+	
+	public void notifyListeners() {
+		if (listeners != null) {
+			for (Listener listener : listeners) {
+				listener.onTableModified();
+			}
+		}
 	}
 }
